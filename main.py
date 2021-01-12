@@ -1,16 +1,38 @@
 import pygame as pg
-
+import random
 
 def per(per, tot):
     return tot - (tot * per / 100)
 
+def Merge(dict1, dict2):
+    print(">>>In merge")
+    return dict1 | dict2
+
+def around(present_v, last_value, limt=50):
+
+    x0 = [i for i in range(last_value[0], last_value[0] + limt, 1)]
+    y0 = [i for i in range(last_value[1], last_value[1] - limt, -1)]
+    x=False;y=False
+    if not present_v[0] in x0:
+        x=True
+    if not present_v[1] in y0:
+        y=True
+    return x,y
+
+
+    # print(l,present_v,last_value)
+
 
 class kite:
     def __init__(self):
+        self.x_pos = random.randint(0, 400)
+        self.y_pos = random.randint(50, 400)
+        self.kites = {}
         print("Asklm")
         pg.init()
         self.log = 0
         self.horiz = 0.5
+        self.regiskite = []
         self.verti = 0.4
         self.WWidth = 950
         self.Wheight = 700
@@ -19,6 +41,7 @@ class kite:
         self.End = False
         # self.Kite, b1, b2, th, po = self.makeKite(400, 30, 50, (255, 0, 0))
         self.x = 200
+        self.bot0()
         self.y = 500
         while not self.End:
 
@@ -26,7 +49,9 @@ class kite:
                 if event.type == pg.QUIT:
                     self.End = True
 
-            self.player()
+            playi = self.player()
+            boti = self.bot0()
+            # for
             pg.display.flip()
             self.Display.fill((0, 0, 0))
 
@@ -44,11 +69,9 @@ class kite:
         if pressed[pg.K_UP]:
             self.y += 0.5
         if pressed[pg.K_DOWN] and pressed[pg.K_LEFT]:
-            print("Analog Left")
             log = 30
         if pressed[pg.K_DOWN] and pressed[pg.K_RIGHT]:
             log = -30
-            print("Analog Right")
         if pressed[pg.K_LEFT]:
             self.x -= self.horiz
         if pressed[pg.K_RIGHT]:
@@ -64,6 +87,7 @@ class kite:
             self.y = self.Wheight
 
         Kite, b1, b2, th, po = self.makeKite(self.x, self.y, 50, (255, 0, 0), alog=log)
+        return Kite
 
     def collision(self, playercoord, botcoord):
         if playercoord.colliderect(botcoord):
@@ -74,6 +98,8 @@ class kite:
         y = points[1] + 60
         bottom = self.Wheight
         return pg.draw.aaline(self.Display, (0, 255, 0), (x, y), (int(self.WWidth / 2), bottom))
+    def movex(self,point,kite):
+        kite.move(poin)
 
     def makeKite(self, x, y, w, rgb=(255, 255, 255), ad=4, alog=0):
 
@@ -90,19 +116,38 @@ class kite:
         z1 = [*pointx1, *pointy1]
 
         mage = pg.draw.polygon(self.Display, rgb, (p0, p1, p2, p3))
-        # x = pg.draw.line(self.Display, (0, 0, 0), *pointx, width=2)
-        # x = pg.draw.line(self.Display, (0, 0, 0), *pointy, width=2)
         Bd1 = pg.draw.aalines(self.Display, (0, 0, 0), True, z)
         Bd2 = pg.draw.aalines(self.Display, (0, 0, 0), True, z1)
-
-        # return pg.draw.polygon(self.Display, rgb, (p0, p1, p2, p3))
-        # return p0, p1, p2, p3
         return p1, Bd1, Bd2, self.thread(p1), mage
 
-    def bot(self):
-        self.kites = []
-        Kite, b1, b2, th, po = self.makeKite(400, 30, 50, (255, 0, 0))
-        self.kites.append([kite, po, th])
+    def runbot(self,kite, coord):
+        kites = self.kites
+        px = random.randint(coord[0]-20, coord[0]+20)
+        py = random.randint(coord[1]-20, coord[1]+20)
+        plx = self.x
+        ply = self.y
+        cx, cy = around((px, py), (plx, ply))
+        if not cx or not cy:
+            self.runbot(kite, coord)
+        else:
+
+
+
+
+    def bot0(self, no_bots):
+        e = self.WWidth - 50
+        s = int(e/no_bots)
+        print(f"DIVI: {s}")
+        frox = range(50,e, +s)
+        print(frox)
+        ys = [random.randint(30,100) for i in range(len(frox))]
+        for x in frox:
+            self.bot1((x, ys[frox.index(x)]), 50, (random.choice([0, 255]),
+                                                   random.choice([0, 255]), random.choice([0, 255])),end=e,step=s)
+
+    def bot1(self,coords=(400, 30), size=50, color=(255, 0, 0),end=0,step=0):
+        Kite, b1, b2, th, po = self.makeKite(coords[0], coords[1], size, color)
+        self.kites = Merge(self.kites, {Kite: {"coodrs": coords, "size": size, "color": color,"end": end, "step": step}})
 
 
 if __name__ == '__main__':
