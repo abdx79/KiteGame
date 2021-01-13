@@ -16,7 +16,7 @@ def Merge(dict1, dict2):
 def around(present_v, last_value, limt=50):
     x0 = [i for i in range(int(last_value[0]), int(last_value[0]) + limt, 1)]
     y0 = [i for i in range(int(last_value[1]), int(last_value[1]) - limt, -1)]
-    x = False;
+    x = False
     y = False
     if not present_v[0] in x0:
         x = True
@@ -50,6 +50,7 @@ class kite:
         self.regiskite = []
         self.verti = 0.4
         self.WWidth = 950
+        self.po = 0
         self.Wheight = 700
         self.Display = pg.display.set_mode((self.WWidth, self.Wheight))
         pg.display.set_caption("Kite Game")
@@ -101,8 +102,7 @@ class kite:
         if self.y > self.Wheight:
             self.y = self.Wheight
 
-        Kite, b1, b2, th, po = self.makeKite(self.x, self.y, 50, (255, 0, 0), alog=log, thk=True)
-        return Kite
+        self.makeKite(self.x, self.y, 50, (255, 0, 0), alog=log, thk=True)
 
     def collision(self, playercoord, botcoord):
         if playercoord.colliderect(botcoord):
@@ -123,9 +123,10 @@ class kite:
             return pg.draw.aaline(self.Display, (0, 255, 0), (x, y), (mx, bottom))
 
     def managebots(self):
-        for kite in self.kites:
-            self.runbot(self.kites[kite])
+        for kite11 in self.kites:
+            self.runbot(self.kites[kite11])
 
+    # def makek(self,*args, **kwargs):
     def makeKite(self, x, y, w=50, rgb=(255, 255, 255), ad=4, alog=0, thk=None):
         h = w + 20
         p1 = (x, y)
@@ -142,18 +143,30 @@ class kite:
         mage = pg.draw.polygon(self.Display, rgb, (p0, p1, p2, p3))
         Bd1 = pg.draw.aalines(self.Display, (0, 0, 0), True, z)
         Bd2 = pg.draw.aalines(self.Display, (0, 0, 0), True, z1)
-        return p1, Bd1, Bd2, self.thread(p1, thk), mage
+        # sleep(0.001)
+        self.thread(p1, thk)
+        # return p1, Bd1, Bd2, self.thread(p1, thk), mage
 
-    def runbot(self, info, coord=None):
+    # def makeKite(self, *args, **kwargs):
+    #     Thread(target=self.makek, args=args, kwargs=kwargs, daemon=True).start()
+
+    # def makeKite(self, x, y, w=50, rgb=(255, 255, 255), ad=4, alog=0,thk=None):
+
+    def botruner(self, info):
+        sleep(0.001)
         px = random.randint(info["coord"][0] - 5, info["coord"][0] + 5)
         py = random.randint(info["coord"][1] - 5, info["coord"][1] + 5)
         plx = self.x
         ply = self.y
         cx, cy = around((px, py), (plx, ply))
         if not cx or not cy:
+            # self.runbot(kite, coord)
             self.makeKite(px, py, rgb=info["color"])
         else:
             self.makeKite(px, py, rgb=info["color"])
+
+    def runbot(self, *args):
+        Thread(target=self.botruner, args=args, daemon=True).start()
 
     def bot0(self, no_bots):
         e = self.WWidth - 50
@@ -166,13 +179,15 @@ class kite:
 
         for x in frox:
             colorx = random.choice(colors.color_list)
+
             self.bot1((x, ys[frox.index(x)]), 50, colorx, end=e, step=s)
 
     def bot1(self, coords=(400, 30), size=50, color=(255, 0, 0), end=0, step=0):
-        Kite, b1, b2, th, po = self.makeKite(coords[0], coords[1], size, color)
+        self.makeKite(coords[0], coords[1], size, color)
         self.kites = Merge(self.kites,
-                           {f"{po}": {"coord": (coords[0] + 50, coords[1]), "size": size, "color": color, "end": end,
-                                      "step": step}})
+                           {f"{self.po}": {"coord": (coords[0] + 50, coords[1]), "size": size, "color": color,
+                                           "end": end, "step": step}})
+        self.po += 1
 
 
 if __name__ == '__main__':
