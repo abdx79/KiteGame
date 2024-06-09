@@ -177,3 +177,6 @@ class kite:
 
 if __name__ == '__main__':
     kite()
+# test
+# kite().bot0(5)
+# owner
