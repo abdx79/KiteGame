@@ -72,9 +72,6 @@ class kite:
 
     def player(self, x=300, y=400, log=0):
         log = 0
-        log = 0
-        log = 0
-        log = 0
         pressed = pg.key.get_pressed()
 
         if not pressed[pg.K_DOWN]:
