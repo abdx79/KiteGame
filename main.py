@@ -72,6 +72,9 @@ class kite:
 
     def player(self, x=300, y=400, log=0):
         log = 0
+        log = 0
+        log = 0
+        log = 0
         pressed = pg.key.get_pressed()
 
         if not pressed[pg.K_DOWN]:
@@ -177,3 +180,9 @@ class kite:
 
 if __name__ == '__main__':
     kite()
+# test
+# kite().bot0(5)
+# Customer
+
+# Hello World
+# saadbranch
